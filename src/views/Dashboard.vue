@@ -18,10 +18,10 @@ export default {
     return {
       active: 0,
       activeText: {
-        0: "我要拿",
-        1: "我要还",
-        2: "我要查",
-        3: "我的"
+        0: "领取",
+        1: "归还",
+        2: "查询",
+        3: "设置"
       },
       borrowList:[1]
     };
@@ -43,7 +43,7 @@ export default {
           path = "search";
           break;
         case 3:
-          path = "me";
+          path = "setting";
           break;
 
         default:

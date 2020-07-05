@@ -7,18 +7,21 @@ const routes = [{
     path: '/',
     name: 'dashboard',
     component: () => import( /* webpackChunkName: "about" */ '../views/Dashboard.vue'),
-    children: [
-      {
-        // 当 /user/:id/profile 匹配成功，
-        // UserProfile 会被渲染在 User 的 <router-view> 中
+    children: [{
         path: 'borrow',
         component: () => import( /* webpackChunkName: "about" */ '../views/Borrow/Borrow.vue')
       },
       {
-        // 当 /user/:id/profile 匹配成功，
-        // UserProfile 会被渲染在 User 的 <router-view> 中
         path: 'giveback',
         component: () => import( /* webpackChunkName: "about" */ '../views/Giveback/Giveback.vue')
+      },
+      {
+        path: 'search',
+        component: () => import( /* webpackChunkName: "about" */ '../views/Search/Search.vue')
+      },
+      {
+        path: 'setting',
+        component: () => import( /* webpackChunkName: "about" */ '../views/Setting/Setting.vue')
       },
 
     ],
