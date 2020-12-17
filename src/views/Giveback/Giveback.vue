@@ -10,7 +10,7 @@
       </van-step>
       <van-step>
         <h3>
-          领取 扳手 x1 
+          领取 扳手 x1
           <van-tag type="primary" size="large" @click="onSubmit()">点击归还</van-tag>
         </h3>
         <p>
@@ -30,7 +30,6 @@
       </van-step>
     </van-steps>
 
-
     <!-- 空状态 -->
     <van-empty description="今日未领取工具" />
   </div>
@@ -38,17 +37,16 @@
 
 <script>
 export default {
-  name: "Giveback",
-  data(){
-    return{
-      active:-1
+  name: 'Giveback',
+  data () {
+    return {
+      active: -1
     }
   },
-  methods:{
-      onSubmit(e){
-          console.log("归还");
-          
-      }
+  methods: {
+    onSubmit (e) {
+      console.log('归还')
+    }
   }
-};
+}
 </script>
