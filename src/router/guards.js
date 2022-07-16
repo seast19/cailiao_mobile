@@ -1,3 +1,6 @@
+import { status } from '@/api/user'
+import store from "@/store/user"
+
 // 检查登录状态
 function checkLogin(to, from, next) {
 	const jwt = localStorage.getItem('jwt')
@@ -7,19 +10,16 @@ function checkLogin(to, from, next) {
 	}
 
 	// jwt无效跳转login
-	window
-		.axios({
-			method: 'get',
-			url: '/login/status'
-		})
+	status()
 		.then((res) => {
 			// console.log(res);
-			res = res.data
+			// res = res.data
 			if (res.code === 2000 && res.data.phone) {
+				store.commit("setUserInfo",res.data)
 				// console.log("登录状态有效");
 				next()
 			} else {
-				localStorage.setItem('jwt','')
+				localStorage.setItem('jwt', '')
 				next('/login')
 			}
 		})

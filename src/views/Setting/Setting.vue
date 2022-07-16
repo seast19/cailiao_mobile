@@ -32,6 +32,7 @@ export default {
   methods:{
     logout(){
       localStorage.setItem('jwt','')
+	  this.$store.commit("clearUserInfo")
       Notify({ type: 'danger', message: '已退出登录' });
       this.$router.push({name:'login'})
       
