@@ -1,37 +1,37 @@
 <template>
 	<div>
+		<div style="height: 15px"></div>
 		<!-- 日期选框 -->
-		<van-field readonly clickable name="calendar" :value="startTime" label="开始日期" placeholder="点击选择日期"
-			@click="showCalendar1 = true" />
-		<van-calendar :min-date="minDate" v-model="showCalendar1" @confirm="onConfirm1" />
-
-		<van-field readonly clickable name="calendar" :value="stopTime" label="结束日期" placeholder="点击选择日期"
-			@click="showCalendar2 = true" />
-		<van-calendar :min-date="minDate" v-model="showCalendar2" @confirm="onConfirm2" />
+		<van-field clickable name="calendar" :value="rangeTime" label="时间段" placeholder="点击选择日期"
+			@click="showCalendar3 = true" />
+		<van-calendar :min-date="new Date(2017, 0, 1)" :allow-same-day="true" v-model="showCalendar3" type="range"
+			@confirm="onConfirm3" />
 
 		<!-- 下拉菜单 -->
 		<van-dropdown-menu>
-			<van-dropdown-item v-model="chooseCar" :options="carOptions" :disabled="!setPermitAdmin" @change="reLoad" />
-			<!-- <van-dropdown-item v-model="choosePlace" :options="placeOptions" /> -->
+			<van-dropdown-item v-model="chooseCar" :options="carOptions" :disabled="!setPermitAdmin" @change="onRefresh" />
 		</van-dropdown-menu>
+
 		<!-- 下拉刷新 -->
 		<van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-
 			<!-- 领取物资详情 -->
 			<van-list style="margin-bottom:50px" v-model="loading" :finished="finished" finished-text="没有更多了"
 				@load="onLoad">
-				<!-- <van-cell v-for="item in list" :key="item.ID" :title="item.ID" /> -->
 				<van-steps direction="vertical" :active="-1">
 					<van-step v-for="item in list" :key="item.ID">
-						<h3>
-							<van-tag v-if="item.Type === 'receive'" type="primary">入库</van-tag>
-							<van-tag v-if="item.Type === 'send'" type="warning">出库</van-tag>
-							{{ item.Material.Name }}
-						</h3>
+						<p>
+							<span style="font-weight: bold"> {{ item.Material.Name }} </span>
+							<span style="font-style: italic"> {{ item.Material.Model }} </span>
+							<span style="float: right">{{ item.User.RealName }}</span>
+
+						</p>
 						<div>
 							<span>
 								{{ item.CreateAt | formatDate }}
 							</span>
+							<van-tag v-if="item.Type === 'receive'" type="primary">入库</van-tag>
+							<van-tag v-if="item.Type === 'send'" type="warning">出库</van-tag>
+
 							<span style="float:right" v-show="item.SendCount > 0">
 								出库数量：{{ item.SendCount }}
 							</span>
@@ -56,19 +56,16 @@ export default {
 	data() {
 		return {
 			// 日期相关
-			startTime: '',
+			// startTime: '',
 			startStamp: '',
-			stopTime: '',
+			// stopTime: '',
 			stopStamp: '',
-			showCalendar1: false,
-			showCalendar2: false,
+			rangeTime: '',
+
+			showCalendar3: false,
 
 			chooseCar: '',
 			carOptions: [],
-
-
-			minDate: new Date(2018, 0, 1),
-			// maxDate: new Date(2099, 0, 31),
 
 			currentPage: 0,
 			list: [],
@@ -79,25 +76,16 @@ export default {
 		}
 	},
 	methods: {
-		onConfirm1(date) {
-			// console.log(date.getTime())
-			this.startTime = `${date.getFullYear()}/${date.getMonth() +
-				1}/${date.getDate()}`
-			this.startStamp = new Date(date.toLocaleDateString()).getTime()
-			this.showCalendar1 = false
-
-			this.reLoad()
+		// 选择日期
+		onConfirm3(data) {
+			const [start, end] = data;
+			this.rangeTime = `${start.getFullYear()}/${start.getMonth() + 1}/${start.getDate()} - ${end.getFullYear()}/${end.getMonth() + 1}/${end.getDate()}`
+			this.startStamp = new Date(start.toLocaleDateString()).getTime()
+			this.stopStamp = new Date(end.toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1
+			this.showCalendar3 = false
+			this.onRefresh()
 		},
-		onConfirm2(date) {
-			this.stopTime = `${date.getFullYear()}/${date.getMonth() +
-				1}/${date.getDate()}`
-			this.stopStamp =
-				new Date(date.toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1
 
-			this.showCalendar2 = false
-
-			this.reLoad()
-		},
 		// 获取车号信息
 		async getCars() {
 			await apiGetCarOptions()
@@ -110,36 +98,17 @@ export default {
 					// console.log(res.data);
 					this.carOptions = res.data
 				})
-		},
-
-		// 手动重置搜索记录
-		async reLoad() {
-			// this.loading = false
-			// this.finished = true
-			this.list = []
-			this.currentPage = 0
-			// this.loading=false
-			// this.finished = false
-			// this.finished = false
-			this.loading=true
-			await this.onLoad()
-
-			// this.refreshing = false
-		},
+		},		
 
 		// 全部重置刷新
 		async onRefresh() {
-			// 清空数据列表
-			this.startTime = ''
-			this.startStamp = ''
+			// 清空数据列表		
 			this.list = []
 			this.currentPage = 0
 
-			// this.finished = false
-			this.loading=true
+			this.finished = false
+			this.loading = true
 			await this.onLoad()
-
-			this.refreshing = false
 		},
 
 		// 自动搜索记录
@@ -148,8 +117,6 @@ export default {
 				this.list = [];
 				this.refreshing = false;
 			}
-			// console.log(this.startTime)
-			// console.log(1)
 			await apiGetRecordsByPage({
 				car_id: this.chooseCar,
 				page: this.currentPage + 1,
@@ -214,13 +181,6 @@ export default {
 	created() {
 		this.chooseCar = this.$store.state.car
 		this.getCars()
-		// 初始化结束日期
-		let date = new Date()
-		this.stopTime = `${date.getFullYear()}/${date.getMonth() +
-			1}/${date.getDate()}`
-		this.stopStamp =
-			new Date(date.toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1
-
 	}
 }
 </script>

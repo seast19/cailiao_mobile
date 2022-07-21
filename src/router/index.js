@@ -6,18 +6,29 @@ Vue.use(VueRouter)
 
 const routes = [{
   path: '/',
-  
+
   beforeEnter: checkLogin,
-  
+
   component: () => import(/* webpackChunkName: "about" */ '../views/Dashboard.vue'),
   children: [
     {
       path: '',
-      redirect:'send'
-    }, {
-      path: 'send',
-      name: "send",
+      redirect: { name: "sendInfo" },
+    },
+    {
+      path: 'send/info',
+      name: "sendInfo",
+      component: () => import(/* webpackChunkName: "about" */ '../views/send/info.vue')
+    },
+    {
+      path: 'send/send',
+      name: "sendSend",
       component: () => import(/* webpackChunkName: "about" */ '../views/send/send.vue')
+    },
+    {
+      path: 'send/detail',
+      name: "sendDetail",
+      component: () => import(/* webpackChunkName: "about" */ '../views/send/detail.vue')
     },
     {
       path: 'receive',
@@ -52,6 +63,12 @@ const router = new VueRouter({
   // mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+// 设置title
+router.beforeEach((to, from, next) => {
+  window.document.title = to.meta.title == undefined ? '材料管理' : to.meta.title
+  next()
 })
 
 export default router

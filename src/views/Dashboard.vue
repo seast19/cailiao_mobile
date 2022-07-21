@@ -1,10 +1,10 @@
 <template>
   <div>
-    <van-nav-bar :title="activeText[active]" />
-    <keep-alive>
+    <!-- <van-nav-bar :title="activeText[active]" /> -->
+    <!-- <keep-alive> -->
 
     <router-view></router-view>
-    </keep-alive>
+    <!-- </keep-alive> -->
     <van-tabbar v-model="active">
       <van-tabbar-item icon="shop-o" @click.prevent="jump()">{{activeText[0]}}</van-tabbar-item>
       <!-- <van-tabbar-item icon="todo-list-o" :badge="borrowList.length===0?'':borrowList.length" @click.prevent="jump()">{{activeText[1]}}</van-tabbar-item> -->
@@ -35,7 +35,7 @@ export default {
       let path = ''
       switch (this.active) {
         case 0:
-          path = 'send'
+          path = 'sendInfo'
           break
         case 1:
           path = 'total'

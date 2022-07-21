@@ -2,16 +2,19 @@
 
 import Vue from 'vue'
 import axios from 'axios'
+import config from '@/config/index'
 
 // Full config:  https://github.com/axios/axios#request-config
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+// console.log(apiUrl);
 
 
 // 全局配置
-axios.defaults.baseURL = 'http://127.0.0.1:7090/v1';
-axios.defaults.baseURL = 'http://192.168.133.1:7090/v1';
+// axios.defaults.baseURL = 'http://127.0.0.1:7090/v1';
+// axios.defaults.baseURL = 'http://192.168.133.1:7090/v1';
+axios.defaults.baseURL = config.apiUrl;
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 

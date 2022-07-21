@@ -10,7 +10,7 @@
 			<van-field v-model.trim="password" type="password" name="密码" label="密码" placeholder="密码"
 				:rules="[{ required: true, message: '请填写密码' }]" />
 			<div style="margin: 16px;">
-				<van-button block type="info" native-type="submit">
+				<van-button :loading="loading" block type="info" native-type="submit">
 					登录
 				</van-button>
 			</div>
@@ -25,47 +25,37 @@ export default {
 	name: 'Login',
 	data() {
 		return {
+			loading: false,
+
 			username: '',
 			password: ''
 		}
 	},
 	methods: {
-		onSubmit(values) {
-			// console.log('submit', values)
+		 onSubmit(values) {
+			this.loading=true
 			login({
 				phone: this.username,
 				pwd: this.password
 			})
-				// this.axios({
-				// 	method: 'post',
-				// 	url: '/login',
-				// 	data: {
-				// 		phone: this.username,
-				// 		pwd: this.password
-				// 	}
-				// })
 				.then(res => {
-					console.log(res);
-					// res = res.data
 					if (res.code === 2000 && res.data.jwt) {
 						localStorage.setItem('jwt', res.data.jwt)
-						// localStorage.setItem('phone', res.data.phone)
-						// vuex设置用户信息
-						// this.$store.commit("setUserInfo",res.data)
-
-						// console.log(this.$store.state.name);
-
-						Notify({ type: 'success', message: '登录成功' });
+						Notify({ type: 'success', message: res.msg });
+						this.loading=false
 						setTimeout(() => {
 							this.$router.push('/')
 						}, 1000)
 					} else {
-						Notify({ type: 'danger', message: '用户名或密码错误' });
+						this.loading=false
+						Notify({ type: 'warning', message: e.msg });
 
 					}
 
 				}).catch(e => {
 					console.log(e);
+					Notify({ type: 'danger', message: e.msg });
+					this.loading=false
 
 				})
 

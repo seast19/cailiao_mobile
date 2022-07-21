@@ -8,3 +8,11 @@ export function apiGetMaterials(params) {
         params
     })
 }
+
+// 根据id获取单个物品
+export function apiGetMaterialById(id) {    
+    return axios({
+        method: 'get',
+        url: `/material/id/${id}`,       
+    })
+}
